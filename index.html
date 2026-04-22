@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Điểm Danh</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <style>
   :root {
     --brand: #0f62fe;
@@ -179,13 +181,6 @@
     position: relative; overflow: hidden;
   }
 
-  .submit-btn::after {
-    content: ''; position: absolute; inset: 0;
-    background: rgba(255,255,255,0); transition: background 0.2s;
-  }
-
-  .submit-btn:hover:not(:disabled)::after { background: rgba(255,255,255,0.08); }
-  .submit-btn:active:not(:disabled) { transform: scale(0.98); }
   .submit-btn:disabled { background: #c6c6c6; cursor: not-allowed; transform: none; }
   .submit-btn.loading { background: var(--brand-dark); cursor: not-allowed; }
 
@@ -224,18 +219,12 @@
 
   .card-header .card-title { margin-bottom: 0; }
 
-  .export-group {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
   .export-btn {
     display: flex; align-items: center; gap: 6px;
     padding: 8px 12px;
-    background: #e8f5e9;
-    color: var(--success);
-    border: 1.5px solid #a7f0ba;
+    background: var(--brand-light);
+    color: var(--brand-dark);
+    border: 1.5px solid #a8c6fa;
     border-radius: 8px;
     font-family: 'Be Vietnam Pro', sans-serif;
     font-size: 12px; font-weight: 700;
@@ -244,22 +233,10 @@
     white-space: nowrap;
   }
 
-  .export-btn:hover { background: #c8e6c9; border-color: #66bb6a; }
-  .export-btn:active { transform: scale(0.97); }
+  .export-btn:hover { background: #b0d0ff; border-color: var(--brand); }
   .export-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  .export-btn.server {
-    background: var(--brand-light);
-    color: var(--brand-dark);
-    border-color: #a8c6fa;
-  }
-
-  .export-btn.server:hover { background: #b0d0ff; border-color: var(--brand); }
-  .export-btn.server:disabled { opacity: 0.45; cursor: not-allowed; }
-
-  .export-btn svg {
-    width: 13px; height: 13px; flex-shrink: 0;
-  }
+  .export-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
 
   .btn-spinner {
     width: 12px; height: 12px;
@@ -288,22 +265,11 @@
 
   .empty-history { text-align: center; color: var(--muted); font-size: 13px; padding: 20px; }
 
-  .src-badge {
-    font-size: 9px; font-weight: 700;
-    padding: 2px 5px; border-radius: 4px;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    flex-shrink: 0;
-  }
-
-  .src-badge.local { background: var(--brand-light); color: var(--brand-dark); }
-  .src-badge.server { background: #fff0b3; color: #7d5a00; }
-
   .toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: #1b5e20; color: #fff;
     padding: 12px 20px; border-radius: 10px;
     font-size: 13px; font-weight: 600;
-    display: flex; align-items: center; gap: 8px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
     z-index: 999; white-space: nowrap;
@@ -320,7 +286,6 @@
   }
 
   .setup-banner.show { display: block; }
-  .setup-banner strong { font-weight: 700; display: block; margin-bottom: 4px; }
 
   .api-input {
     width: 100%; padding: 10px 12px;
@@ -335,29 +300,6 @@
     border: none; border-radius: 8px;
     font-family: 'Be Vietnam Pro', sans-serif;
     font-size: 13px; font-weight: 600; cursor: pointer;
-  }
-
-  .info-box {
-    width: 100%; max-width: 480px;
-    margin-top: 16px;
-    background: #f0f4ff;
-    border: 1.5px solid #c7d9ff;
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-size: 12px; color: #1a3a7a; display: none;
-  }
-
-  .info-box.show { display: block; }
-  .info-box strong { font-size: 12px; font-weight: 700; display: block; margin-bottom: 6px; }
-  .info-box code {
-    display: block; background: #e0eaff; border-radius: 6px;
-    padding: 8px 10px; font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; white-space: pre-wrap; margin-top: 6px; color: #0043ce;
-  }
-
-  .toggle-info {
-    font-size: 11px; color: var(--brand); cursor: pointer;
-    text-decoration: underline; margin-top: 8px; display: inline-block;
   }
 
   .footer {
@@ -380,13 +322,6 @@
     50% { opacity: 0.3; }
   }
 
-  @media (max-width: 480px) {
-    .card { margin: 16px 12px 0; width: calc(100% - 24px); }
-    .setup-banner, .info-box { margin: 12px 12px 0; width: calc(100% - 24px); }
-    .footer { padding: 0 12px; }
-    .export-btn { font-size: 11px; padding: 7px 9px; }
-  }
-
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     20%, 60% { transform: translateX(-6px); }
@@ -394,6 +329,7 @@
   }
 </style>
 </head>
+
 <body>
 
 <!-- TOP BAR -->
@@ -458,26 +394,17 @@
 <div class="card">
   <div class="card-header">
     <div class="card-title">Lịch sử hôm nay</div>
-    <div class="export-group">
-      <button class="export-btn server" id="exportServerBtn" onclick="exportFromServer()" title="Tải toàn bộ dữ liệu từ Google Sheet rồi xuất Excel">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="16 17 21 12 16 7"/>
-          <line x1="21" y1="12" x2="9" y2="12"/>
-          <path d="M9 18H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/>
-        </svg>
-        Sheet
-      </button>
-      <button class="export-btn" id="exportBtn" onclick="exportLocal()" disabled title="Xuất lịch sử phiên này ra Excel">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="12" y1="12" x2="12" y2="18"/>
-          <polyline points="9 15 12 18 15 15"/>
-        </svg>
-        Xuất Excel
-      </button>
-    </div>
+
+    <button class="export-btn" id="exportServerBtn" onclick="exportFromServer()" title="Tải dữ liệu từ Google Sheet rồi xuất Excel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+        <path d="M9 18H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/>
+      </svg>
+      Sheet
+    </button>
   </div>
+
   <div class="history-list" id="historyList">
     <div class="empty-history">Chưa có lượt điểm danh nào</div>
   </div>
@@ -498,29 +425,30 @@
 // ============================================================
 // CẤU HÌNH
 // ============================================================
-const STORAGE_KEY   = 'diemdanh_api_url';
-const HISTORY_KEY   = 'diemdanh_history';
+const STORAGE_KEY = 'diemdanh_api_url';
 
 let userLat = null, userLng = null;
 let apiUrl  = localStorage.getItem(STORAGE_KEY) || '';
-let localHistory = JSON.parse(sessionStorage.getItem(HISTORY_KEY) || '[]');
 
 // ============================================================
 // INIT
 // ============================================================
 window.onload = () => {
   startClock();
-  renderHistory();
   if (!apiUrl) document.getElementById('setupBanner').classList.add('show');
   updateServerBtnState();
   getGPS();
+
+  if (apiUrl) {
+    loadHistoryFromServer();
+  }
 };
 
 function updateServerBtnState() {
   const btn = document.getElementById('exportServerBtn');
   btn.disabled = !apiUrl;
   btn.title = apiUrl
-    ? 'Tải toàn bộ dữ liệu từ Google Sheet rồi xuất Excel (gộp với phiên hiện tại)'
+    ? 'Tải dữ liệu từ Google Sheet rồi xuất Excel'
     : 'Cần cấu hình API URL trước';
 }
 
@@ -547,16 +475,18 @@ function getGPS() {
     setGpsState('error', '❌', 'Trình duyệt không hỗ trợ GPS', '');
     return;
   }
+
   navigator.geolocation.getCurrentPosition(
     pos => {
       userLat = pos.coords.latitude;
       userLng = pos.coords.longitude;
       const acc = Math.round(pos.coords.accuracy);
+
       setGpsState('ok', '✅', 'Đã xác định vị trí',
         `${userLat.toFixed(5)}, ${userLng.toFixed(5)} · ±${acc}m`);
-      const btn = document.getElementById('submitBtn');
+
       if (apiUrl) {
-        btn.disabled = false;
+        document.getElementById('submitBtn').disabled = false;
         document.getElementById('btnText').textContent = 'Điểm Danh';
         document.getElementById('btnIcon').textContent = '✅';
       } else {
@@ -586,28 +516,27 @@ function setGpsState(state, icon, label, coords) {
 // ============================================================
 function saveApiUrl() {
   const val = document.getElementById('apiInput').value.trim();
+
   if (!val.startsWith('https://script.google.com')) {
     alert('URL không hợp lệ! Phải bắt đầu bằng https://script.google.com');
     return;
   }
+
   apiUrl = val;
   localStorage.setItem(STORAGE_KEY, apiUrl);
   document.getElementById('setupBanner').classList.remove('show');
-  document.getElementById('infoBox').classList.remove('show');
-  updateServerBtnState();
-  if (userLat !== null && userLng !== null) {
-  document.getElementById('submitBtn').disabled = false;
-  document.getElementById('btnText').textContent = 'Điểm Danh';
-  document.getElementById('btnIcon').textContent = '✅';
-} else {
-  document.getElementById('btnText').textContent = 'Đang lấy GPS...';
-  getGPS(); // gọi lại GPS sau khi đã có apiUrl
-}
-}
 
-function toggleInfo() {
-const info = document.getElementById('infoBox');
-if (info) info.classList.remove('show');
+  updateServerBtnState();
+  loadHistoryFromServer();
+
+  if (userLat !== null && userLng !== null) {
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('btnText').textContent = 'Điểm Danh';
+    document.getElementById('btnIcon').textContent = '✅';
+  } else {
+    document.getElementById('btnText').textContent = 'Đang lấy GPS...';
+    getGPS();
+  }
 }
 
 // ============================================================
@@ -616,14 +545,14 @@ if (info) info.classList.remove('show');
 async function submitForm() {
   const name = document.getElementById('name').value.trim();
   if (!name) { shake(document.getElementById('name')); document.getElementById('name').focus(); return; }
-  if (!userLat)  { alert('Chưa có dữ liệu GPS!'); return; }
-  if (!apiUrl)   { document.getElementById('setupBanner').classList.add('show'); return; }
+  if (userLat === null || userLng === null) { alert('Chưa có dữ liệu GPS!'); return; }
+  if (!apiUrl) { document.getElementById('setupBanner').classList.add('show'); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.classList.add('loading');
   document.getElementById('btnIcon').textContent = '⏳';
-  document.getElementById('btnText').textContent  = 'Đang xử lý...';
+  document.getElementById('btnText').textContent = 'Đang xử lý...';
   document.getElementById('result').style.display = 'none';
 
   try {
@@ -637,16 +566,20 @@ async function submitForm() {
         lng: userLng
       })
     });
+
     const data = await res.json();
     showResult(data);
-    addHistory(name, document.getElementById('empId').value.trim(), data, 'local');
+
+    // reload lịch sử từ sheet luôn
+    loadHistoryFromServer();
+
   } catch (err) {
     showResult({ success: false, message: 'Không kết nối được server. Kiểm tra API URL.', distance: 0 });
   } finally {
     btn.disabled = false;
     btn.classList.remove('loading');
     document.getElementById('btnIcon').textContent = '✅';
-    document.getElementById('btnText').textContent  = 'Điểm Danh';
+    document.getElementById('btnText').textContent = 'Điểm Danh';
   }
 }
 
@@ -657,70 +590,74 @@ function showResult(data) {
   const el = document.getElementById('result');
   el.style.display = 'block';
   el.className     = 'result ' + (data.success ? 'success' : 'fail');
+
   document.getElementById('resultEmoji').textContent = data.success ? '🎉' : '🚫';
   document.getElementById('resultTitle').textContent = data.success ? 'Điểm danh thành công!' : 'Không hợp lệ';
-  document.getElementById('resultMsg').textContent   = data.message;
+  document.getElementById('resultMsg').textContent   = data.message || '';
   document.getElementById('resultMeta').textContent  =
-    data.timestamp ? `🕐 ${data.timestamp}` : `📏 ${data.distance}m`;
+    data.timestamp ? `🕐 ${data.timestamp}` : `📏 ${data.distance || 0}m`;
+
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // ============================================================
-// HISTORY (LOCAL)
+// LOAD HISTORY FROM GOOGLE SHEET
 // ============================================================
-function addHistory(name, empId, data, source = 'local') {
-  const now   = new Date();
-  const entry = {
-    name, empId,
-    ok:      data.success,
-    dist:    data.distance || 0,
-    time:    now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-    date:    now.toLocaleDateString('vi-VN'),
-    lat:     userLat,
-    lng:     userLng,
-    message: data.message || '',
-    source
-  };
-  localHistory.unshift(entry);
-  if (localHistory.length > 50) localHistory.pop();
-  sessionStorage.setItem(HISTORY_KEY, JSON.stringify(localHistory));
-  renderHistory();
-}
+async function loadHistoryFromServer() {
+  if (!apiUrl) return;
 
-function renderHistory() {
-  const list      = document.getElementById('historyList');
-  const exportBtn = document.getElementById('exportBtn');
+  const list = document.getElementById('historyList');
+  list.innerHTML = `<div class="empty-history">⏳ Đang tải dữ liệu từ Google Sheet...</div>`;
 
-  if (!localHistory.length) {
-    list.innerHTML   = '<div class="empty-history">Chưa có lượt điểm danh nào</div>';
-    exportBtn.disabled = true;
-    return;
+  try {
+    const url = apiUrl + (apiUrl.includes('?') ? '&' : '?') + 'action=export';
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.success || !Array.isArray(data.rows)) {
+      list.innerHTML = `<div class="empty-history">⚠️ Không đọc được dữ liệu từ Sheet</div>`;
+      return;
+    }
+
+    const today = new Date().toLocaleDateString('vi-VN');
+
+    const rows = data.rows.map(r => ({
+      time: r['Thời gian'] || '',
+      name: r['Họ tên'] || '',
+      empId: r['Mã NV'] || '',
+      dist: r['Khoảng cách (m)'] || 0,
+      status: r['Trạng thái'] || ''
+    }));
+
+    const todayRows = rows.filter(r => String(r.time).includes(today));
+
+    if (!todayRows.length) {
+      list.innerHTML = `<div class="empty-history">Chưa có lượt điểm danh nào hôm nay</div>`;
+      return;
+    }
+
+    list.innerHTML = todayRows.reverse().map(h => {
+      const ok = String(h.status).includes('✓') || String(h.status).toLowerCase().includes('có mặt');
+
+      return `
+        <div class="history-item">
+          <div class="history-dot ${ok ? 'ok' : 'fail'}"></div>
+          <div style="flex:1;min-width:0">
+            <div class="history-name">${h.name}${h.empId ? ` <span style="font-weight:400;color:var(--muted);font-size:12px">(${h.empId})</span>` : ''}</div>
+            <div class="history-time">${h.time}</div>
+          </div>
+          <div class="history-dist">${h.dist}m</div>
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    list.innerHTML = `<div class="empty-history">❌ Lỗi tải dữ liệu từ server</div>`;
   }
-
-  exportBtn.disabled = false;
-  list.innerHTML = localHistory.map(h => `
-    <div class="history-item">
-      <div class="history-dot ${h.ok ? 'ok' : 'fail'}"></div>
-      <div style="flex:1;min-width:0">
-        <div class="history-name">${h.name}${h.empId ? ` <span style="font-weight:400;color:var(--muted);font-size:12px">(${h.empId})</span>` : ''}</div>
-        <div class="history-time">${h.time}</div>
-      </div>
-      <span class="src-badge ${h.source === 'server' ? 'server' : 'local'}">${h.source === 'server' ? 'Sheet' : 'Local'}</span>
-      <div class="history-dist">${h.dist}m</div>
-    </div>
-  `).join('');
 }
 
 // ============================================================
-// XUẤT EXCEL — chỉ phiên hiện tại
-// ============================================================
-function exportLocal() {
-  if (!localHistory.length) return;
-  buildAndDownloadExcel(localHistory, 'Phiên hiện tại');
-}
-
-// ============================================================
-// XUẤT EXCEL — GỘP SERVER + LOCAL
+// EXPORT FROM GOOGLE SHEET ONLY
 // ============================================================
 async function exportFromServer() {
   if (!apiUrl) {
@@ -732,29 +669,35 @@ async function exportFromServer() {
   btn.disabled = true;
   btn.innerHTML = '<div class="btn-spinner"></div> Đang tải...';
 
-  let serverRows = [];
-
   try {
     const url = apiUrl + (apiUrl.includes('?') ? '&' : '?') + 'action=export';
-    const res  = await fetch(url);
+    const res = await fetch(url);
     const data = await res.json();
 
-    if (data.success && Array.isArray(data.rows)) {
-      serverRows = data.rows.map(r => ({
-        name:    r['Họ tên']            || r.name        || '',
-        empId:   r['Mã NV']             || r.employeeId  || '',
-        ok:      r['Trạng thái']        ? String(r['Trạng thái']).includes('✓') || String(r['Trạng thái']).toLowerCase().includes('có mặt') : (r.ok ?? true),
-        dist:    r['Khoảng cách (m)']   || r.distance    || 0,
-        time:    r['Thời gian']         || r.time        || '',
-        date:    r['Ngày']              || r.date        || '',
-        lat:     r['Latitude']          || r.lat         || '',
-        lng:     r['Longitude']         || r.lng         || '',
-        message: r['Ghi chú']           || r.message     || '',
-        source: 'server'
-      }));
-    } else {
-      showToast('⚠️ Server trả về lỗi: ' + (data.message || 'Không có dữ liệu'), true);
+    if (!data.success || !Array.isArray(data.rows)) {
+      showToast('⚠️ Không có dữ liệu hoặc lỗi server!', true);
+      return;
     }
+
+    const serverRows = data.rows.map(r => ({
+      name:    r['Họ tên'] || '',
+      empId:   r['Mã NV'] || '',
+      date:    '', 
+      time:    r['Thời gian'] || '',
+      ok:      String(r['Trạng thái'] || '').includes('✓') || String(r['Trạng thái'] || '').toLowerCase().includes('có mặt'),
+      dist:    r['Khoảng cách (m)'] || 0,
+      message: '',
+      lat:     r['Latitude'] || '',
+      lng:     r['Longitude'] || ''
+    }));
+
+    if (!serverRows.length) {
+      showToast('⚠️ Sheet chưa có dữ liệu!', true);
+      return;
+    }
+
+    buildAndDownloadExcel(serverRows);
+
   } catch (err) {
     showToast('❌ Không kết nối được server. Kiểm tra API URL.', true);
   } finally {
@@ -767,42 +710,23 @@ async function exportFromServer() {
       </svg>
       Sheet`;
   }
-
-  if (!serverRows.length && !localHistory.length) {
-    showToast('⚠️ Không có dữ liệu để xuất!', true);
-    return;
-  }
-
-  const combined = mergeRows(serverRows, localHistory);
-  buildAndDownloadExcel(combined, 'Gộp Sheet + Phiên');
-}
-
-function mergeRows(serverRows, localRows) {
-  const key  = r => `${(r.name||'').trim()}__${r.date}__${r.time}`;
-  const seen  = new Set(serverRows.map(key));
-  const extra = localRows.filter(r => !seen.has(key(r)));
-  return [...serverRows, ...extra];
 }
 
 // ============================================================
 // BUILD & DOWNLOAD EXCEL
 // ============================================================
-function buildAndDownloadExcel(rows, sheetLabel) {
+function buildAndDownloadExcel(rows) {
   const todayISO = new Date().toISOString().slice(0, 10);
-  const today    = new Date().toLocaleDateString('vi-VN');
 
   const tableRows = rows.map((h, i) => ({
-    'STT':                i + 1,
-    'Họ và tên':          h.name,
-    'Mã học sinh':        h.empId || '',
-    'Ngày':               h.date,
-    'Giờ điểm danh':      h.time,
-    'Trạng thái':         h.ok ? 'Có mặt ✓' : 'Vắng mặt ✗',
-    'Khoảng cách (m)':    h.dist,
-    'Nguồn':              h.source === 'server' ? 'Google Sheet' : 'Phiên hiện tại',
-    'Ghi chú':            h.message,
-    'Latitude':           h.lat || '',
-    'Longitude':          h.lng || ''
+    'STT':             i + 1,
+    'Họ và tên':       h.name,
+    'Mã học sinh':     h.empId || '',
+    'Thời gian':       h.time,
+    'Trạng thái':      h.ok ? 'Có mặt ✓' : 'Vắng mặt ✗',
+    'Khoảng cách (m)': h.dist,
+    'Latitude':        h.lat || '',
+    'Longitude':       h.lng || ''
   }));
 
   const wb = XLSX.utils.book_new();
@@ -812,80 +736,18 @@ function buildAndDownloadExcel(rows, sheetLabel) {
     { wch: 5 },
     { wch: 25 },
     { wch: 15 },
-    { wch: 12 },
+    { wch: 22 },
     { wch: 16 },
     { wch: 16 },
-    { wch: 16 },
-    { wch: 18 },
-    { wch: 35 },
     { wch: 14 },
-    { wch: 14 },
+    { wch: 14 }
   ];
 
-  const range = XLSX.utils.decode_range(ws['!ref']);
-  for (let C = range.s.c; C <= range.e.c; C++) {
-    const addr = XLSX.utils.encode_cell({ r: 0, c: C });
-    if (!ws[addr]) continue;
-    ws[addr].s = {
-      font: { bold: true, color: { rgb: 'FFFFFF' } },
-      fill: { fgColor: { rgb: '0F62FE' } },
-      alignment: { horizontal: 'center', vertical: 'center' },
-      border: { bottom: { style: 'thin', color: { rgb: 'AAAAAA' } } }
-    };
-  }
+  XLSX.utils.book_append_sheet(wb, ws, "DiemDanh");
 
-  for (let R = 1; R <= tableRows.length; R++) {
-    for (let C = range.s.c; C <= range.e.c; C++) {
-      const addr = XLSX.utils.encode_cell({ r: R, c: C });
-      if (!ws[addr]) ws[addr] = { t: 's', v: '' };
-      ws[addr].s = {
-        fill: { fgColor: { rgb: R % 2 === 0 ? 'F4F4F4' : 'FFFFFF' } },
-        alignment: { vertical: 'center' },
-        border: { bottom: { style: 'thin', color: { rgb: 'E0E0E0' } } }
-      };
-    }
-    const statusAddr = XLSX.utils.encode_cell({ r: R, c: 5 });
-    if (ws[statusAddr]) {
-      const isOk = tableRows[R - 1]['Trạng thái'].includes('✓');
-      ws[statusAddr].s = {
-        ...ws[statusAddr].s,
-        font: { bold: true, color: { rgb: isOk ? '198038' : 'DA1E28' } }
-      };
-    }
-    const srcAddr = XLSX.utils.encode_cell({ r: R, c: 7 });
-    if (ws[srcAddr]) {
-      const isServer = tableRows[R - 1]['Nguồn'] === 'Google Sheet';
-      ws[srcAddr].s = {
-        ...ws[srcAddr].s,
-        font: { color: { rgb: isServer ? '7d5a00' : '0043ce' }, italic: true }
-      };
-    }
-  }
-
-  XLSX.utils.book_append_sheet(wb, ws, sheetLabel.slice(0, 31));
-
-  const valid      = rows.filter(h => h.ok).length;
-  const invalid    = rows.length - valid;
-  const fromServer = rows.filter(h => h.source === 'server').length;
-  const fromLocal  = rows.length - fromServer;
-
-  const summaryData = [
-    { 'Thống kê': 'Ngày xuất',          'Giá trị': today },
-    { 'Thống kê': 'Tổng lượt điểm danh','Giá trị': rows.length },
-    { 'Thống kê': 'Có mặt',             'Giá trị': valid },
-    { 'Thống kê': 'Vắng mặt',           'Giá trị': invalid },
-    { 'Thống kê': 'Tỉ lệ có mặt',       'Giá trị': rows.length ? `${Math.round(valid / rows.length * 100)}%` : '0%' },
-    { 'Thống kê': '--- Nguồn ---',       'Giá trị': '' },
-    { 'Thống kê': 'Từ Google Sheet',     'Giá trị': fromServer },
-    { 'Thống kê': 'Từ phiên hiện tại',   'Giá trị': fromLocal },
-  ];
-
-  const ws2    = XLSX.utils.json_to_sheet(summaryData);
-  ws2['!cols'] = [{ wch: 22 }, { wch: 20 }];
-  XLSX.utils.book_append_sheet(wb, ws2, 'Thống kê');
-
-  const fileName = `DiemDanh_${sheetLabel.replace(/\s+/g,'_')}_${todayISO}.xlsx`;
+  const fileName = `DiemDanh_GoogleSheet_${todayISO}.xlsx`;
   XLSX.writeFile(wb, fileName);
+
   showToast(`✅ Đã xuất ${rows.length} bản ghi → ${fileName}`);
 }
 
@@ -910,5 +772,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !document.getElementById('submitBtn').disabled) submitForm();
 });
 </script>
+
 </body>
 </html>
