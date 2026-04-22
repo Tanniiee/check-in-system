@@ -42,6 +42,9 @@ Hệ thống điểm danh miễn phí bằng GPS, chạy trên **GitHub Pages** 
 2. Chọn **Extensions → Apps Script**
 3. Xóa code mặc định
 4. Paste toàn bộ code Apps Script vào
+## 📌 Code Google Apps Script
+
+```js
 // ==============CODE APPS SCRIPT =============================
 // CẤU HÌNH — Chỉnh 4 dòng này rồi deploy 1 lần duy nhất
 // ============================================================
@@ -103,14 +106,13 @@ function doGet(e) {
 
       const values  = sheet.getDataRange().getValues();
       if (values.length <= 1) {
-        return jsonOut({ success: true, rows: [] }); // Chỉ có header, chưa có dữ liệu
+        return jsonOut({ success: true, rows: [] });
       }
 
-      const headers = values[0]; // ["Thời gian","Họ tên","Mã NV","Latitude","Longitude","Khoảng cách (m)","Trạng thái"]
+      const headers = values[0];
       const rows    = values.slice(1).map(row => {
         const obj = {};
         headers.forEach((h, i) => {
-          // Định dạng lại Date object thành chuỗi nếu cần
           obj[h] = row[i] instanceof Date
             ? Utilities.formatDate(row[i], "Asia/Ho_Chi_Minh", "dd/MM/yyyy HH:mm:ss")
             : row[i];
@@ -125,7 +127,6 @@ function doGet(e) {
     }
   }
 
-  // Mặc định: ping kiểm tra
   return jsonOut({ success: true, status: "API đang hoạt động ✓", sheetName: CONFIG.SHEET_NAME });
 }
 
@@ -151,7 +152,6 @@ function logToSheet(name, employeeId, lat, lng, dist, allowed, time) {
   const ss    = SpreadsheetApp.getActiveSpreadsheet();
   let   sheet = ss.getSheetByName(CONFIG.SHEET_NAME);
 
-  // Tự tạo sheet + header nếu chưa có
   if (!sheet) {
     sheet = ss.insertSheet(CONFIG.SHEET_NAME);
     const header = [["Thời gian", "Họ tên", "Mã NV", "Latitude", "Longitude", "Khoảng cách (m)", "Trạng thái"]];
@@ -174,7 +174,6 @@ function logToSheet(name, employeeId, lat, lng, dist, allowed, time) {
     status
   ]);
 
-  // Tô màu hồng cho dòng bị từ chối
   if (!allowed) {
     const lastRow = sheet.getLastRow();
     sheet.getRange(lastRow, 1, 1, 7).setBackground("#fce8e6");
@@ -182,14 +181,14 @@ function logToSheet(name, employeeId, lat, lng, dist, allowed, time) {
 }
 
 // ============================================================
-// HELPER — Trả về JSON (Apps Script không cho set header CORS
-// tùy chỉnh; CORS được xử lý tự động khi deploy as "Anyone")
+// HELPER — Trả về JSON
 // ============================================================
 function jsonOut(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
     .setMimeType(ContentService.MimeType.JSON);
 }
+```
 
 
 
