@@ -414,7 +414,6 @@
   <button class="save-api-btn" onclick="saveApiUrl()">Lưu & tiếp tục</button>
 </div>
 
-
 <!-- GPS CARD -->
 <div class="card">
   <div class="card-title">Vị trí hiện tại</div>
@@ -596,15 +595,19 @@ function saveApiUrl() {
   document.getElementById('setupBanner').classList.remove('show');
   document.getElementById('infoBox').classList.remove('show');
   updateServerBtnState();
-  if (userLat) {
-    document.getElementById('submitBtn').disabled = false;
-    document.getElementById('btnText').textContent = 'Điểm Danh';
-    document.getElementById('btnIcon').textContent = '✅';
-  }
+  if (userLat !== null && userLng !== null) {
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('btnText').textContent = 'Điểm Danh';
+  document.getElementById('btnIcon').textContent = '✅';
+} else {
+  document.getElementById('btnText').textContent = 'Đang lấy GPS...';
+  getGPS(); // gọi lại GPS sau khi đã có apiUrl
+}
 }
 
 function toggleInfo() {
-  document.getElementById('infoBox').classList.toggle('show');
+const info = document.getElementById('infoBox');
+if (info) info.classList.remove('show');
 }
 
 // ============================================================
