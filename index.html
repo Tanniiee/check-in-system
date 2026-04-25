@@ -278,6 +278,7 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast.error-toast { background: #b91c1c; }
 
+  /* ── SETUP BANNER ── */
   .setup-banner {
     width: 100%; max-width: 480px;
     background: #fff8e1; border: 1.5px dashed #f1c21b;
@@ -294,13 +295,72 @@
     background: #fffdf0; margin-top: 10px; outline: none;
   }
 
+  .banner-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+
   .save-api-btn {
-    margin-top: 8px; padding: 8px 16px;
+    padding: 8px 16px;
     background: var(--brand); color: #fff;
     border: none; border-radius: 8px;
     font-family: 'Be Vietnam Pro', sans-serif;
     font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
   }
+
+  .save-api-btn:hover { background: var(--brand-dark); }
+
+  .cancel-api-btn {
+    padding: 8px 14px;
+    background: transparent; color: #7d5a00;
+    border: 1px solid #e0c060; border-radius: 8px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .cancel-api-btn:hover { background: rgba(241,194,27,0.15); }
+
+  /* ── API STATUS BAR (hiện URL đang dùng) ── */
+  .api-bar {
+    width: 100%; max-width: 480px;
+    margin-top: 12px;
+    display: none;
+    align-items: center; gap: 10px;
+    padding: 10px 16px;
+    background: var(--surface);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .api-bar.show { display: flex; }
+
+  .api-bar-url {
+    flex: 1; min-width: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .api-bar-label {
+    font-size: 11px; font-weight: 700; color: var(--success);
+    white-space: nowrap; flex-shrink: 0;
+  }
+
+  .repaste-btn {
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 10px;
+    background: #f4f4f4;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 11px; font-weight: 700;
+    color: var(--text); cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+
+  .repaste-btn:hover { background: var(--brand-light); border-color: var(--brand); color: var(--brand-dark); }
 
   .footer {
     width: 100%; max-width: 480px;
@@ -345,9 +405,21 @@
 <!-- SETUP BANNER -->
 <div class="setup-banner" id="setupBanner">
   <strong>⚙️ Cần cấu hình API URL</strong>
-  Paste URL Apps Script Web App của bạn vào đây (chỉ cần làm 1 lần):
+  <span id="bannerDesc"> — Paste URL Apps Script Web App của bạn vào đây:</span>
   <input class="api-input" id="apiInput" placeholder="https://script.google.com/macros/s/.../exec" />
-  <button class="save-api-btn" onclick="saveApiUrl()">Lưu & tiếp tục</button>
+  <div class="banner-actions">
+    <button class="save-api-btn" onclick="saveApiUrl()">💾 Lưu & tiếp tục</button>
+    <button class="cancel-api-btn" id="cancelApiBtn" onclick="hideBanner()" style="display:none">Hủy</button>
+  </div>
+</div>
+
+<!-- API STATUS BAR -->
+<div class="api-bar" id="apiBar">
+  <span class="api-bar-label">🔗 API</span>
+  <span class="api-bar-url" id="apiBarUrl"></span>
+  <button class="repaste-btn" onclick="openRepaste()" title="Thay đổi URL">
+    ✏️ Đổi URL
+  </button>
 </div>
 
 <!-- GPS CARD -->
@@ -435,14 +507,49 @@ let apiUrl  = localStorage.getItem(STORAGE_KEY) || '';
 // ============================================================
 window.onload = () => {
   startClock();
-  if (!apiUrl) document.getElementById('setupBanner').classList.add('show');
-  updateServerBtnState();
+  refreshApiBar();
   getGPS();
+  if (apiUrl) loadHistoryFromServer();
+};
+
+// ============================================================
+// API BAR
+// ============================================================
+function refreshApiBar() {
+  const bar    = document.getElementById('apiBar');
+  const urlEl  = document.getElementById('apiBarUrl');
+  const banner = document.getElementById('setupBanner');
 
   if (apiUrl) {
-    loadHistoryFromServer();
+    bar.classList.add('show');
+    urlEl.textContent = apiUrl;
+    banner.classList.remove('show');
+  } else {
+    bar.classList.remove('show');
+    banner.classList.add('show');
+    document.getElementById('cancelApiBtn').style.display = 'none';
   }
-};
+  updateServerBtnState();
+}
+
+// Mở form đổi URL từ nút "Đổi URL"
+function openRepaste() {
+  const banner = document.getElementById('setupBanner');
+  const input  = document.getElementById('apiInput');
+  const cancel = document.getElementById('cancelApiBtn');
+  const desc   = document.getElementById('bannerDesc');
+
+  input.value = apiUrl;
+  desc.textContent = ' — Paste URL mới vào đây để cập nhật:';
+  cancel.style.display = 'inline-flex';
+  banner.classList.add('show');
+  setTimeout(() => { input.focus(); input.select(); }, 80);
+  banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideBanner() {
+  document.getElementById('setupBanner').classList.remove('show');
+}
 
 function updateServerBtnState() {
   const btn = document.getElementById('exportServerBtn');
@@ -522,11 +629,11 @@ function saveApiUrl() {
     return;
   }
 
+  const isUpdate = !!apiUrl;
   apiUrl = val;
   localStorage.setItem(STORAGE_KEY, apiUrl);
-  document.getElementById('setupBanner').classList.remove('show');
 
-  updateServerBtnState();
+  refreshApiBar();
   loadHistoryFromServer();
 
   if (userLat !== null && userLng !== null) {
@@ -537,6 +644,8 @@ function saveApiUrl() {
     document.getElementById('btnText').textContent = 'Đang lấy GPS...';
     getGPS();
   }
+
+  showToast(isUpdate ? '✅ Đã cập nhật API URL!' : '✅ Đã lưu API URL!');
 }
 
 // ============================================================
@@ -546,7 +655,7 @@ async function submitForm() {
   const name = document.getElementById('name').value.trim();
   if (!name) { shake(document.getElementById('name')); document.getElementById('name').focus(); return; }
   if (userLat === null || userLng === null) { alert('Chưa có dữ liệu GPS!'); return; }
-  if (!apiUrl) { document.getElementById('setupBanner').classList.add('show'); return; }
+  if (!apiUrl) { openRepaste(); return; }
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
@@ -569,8 +678,6 @@ async function submitForm() {
 
     const data = await res.json();
     showResult(data);
-
-    // reload lịch sử từ sheet luôn
     loadHistoryFromServer();
 
   } catch (err) {
@@ -622,10 +729,10 @@ async function loadHistoryFromServer() {
     const today = new Date().toLocaleDateString('vi-VN');
 
     const rows = data.rows.map(r => ({
-      time: r['Thời gian'] || '',
-      name: r['Họ tên'] || '',
-      empId: r['Mã NV'] || '',
-      dist: r['Khoảng cách (m)'] || 0,
+      time:   r['Thời gian'] || '',
+      name:   r['Họ tên'] || '',
+      empId:  r['Mã NV'] || '',
+      dist:   r['Khoảng cách (m)'] || 0,
       status: r['Trạng thái'] || ''
     }));
 
@@ -638,7 +745,6 @@ async function loadHistoryFromServer() {
 
     list.innerHTML = todayRows.reverse().map(h => {
       const ok = String(h.status).includes('✓') || String(h.status).toLowerCase().includes('có mặt');
-
       return `
         <div class="history-item">
           <div class="history-dot ${ok ? 'ok' : 'fail'}"></div>
@@ -660,10 +766,7 @@ async function loadHistoryFromServer() {
 // EXPORT FROM GOOGLE SHEET ONLY
 // ============================================================
 async function exportFromServer() {
-  if (!apiUrl) {
-    showToast('⚠️ Chưa cấu hình API URL!', true);
-    return;
-  }
+  if (!apiUrl) { openRepaste(); return; }
 
   const btn = document.getElementById('exportServerBtn');
   btn.disabled = true;
@@ -682,19 +785,14 @@ async function exportFromServer() {
     const serverRows = data.rows.map(r => ({
       name:    r['Họ tên'] || '',
       empId:   r['Mã NV'] || '',
-      date:    '', 
       time:    r['Thời gian'] || '',
       ok:      String(r['Trạng thái'] || '').includes('✓') || String(r['Trạng thái'] || '').toLowerCase().includes('có mặt'),
       dist:    r['Khoảng cách (m)'] || 0,
-      message: '',
       lat:     r['Latitude'] || '',
       lng:     r['Longitude'] || ''
     }));
 
-    if (!serverRows.length) {
-      showToast('⚠️ Sheet chưa có dữ liệu!', true);
-      return;
-    }
+    if (!serverRows.length) { showToast('⚠️ Sheet chưa có dữ liệu!', true); return; }
 
     buildAndDownloadExcel(serverRows);
 
@@ -733,14 +831,9 @@ function buildAndDownloadExcel(rows) {
   const ws = XLSX.utils.json_to_sheet(tableRows);
 
   ws['!cols'] = [
-    { wch: 5 },
-    { wch: 25 },
-    { wch: 15 },
-    { wch: 22 },
-    { wch: 16 },
-    { wch: 16 },
-    { wch: 14 },
-    { wch: 14 }
+    { wch: 5 }, { wch: 25 }, { wch: 15 },
+    { wch: 22 }, { wch: 16 }, { wch: 16 },
+    { wch: 14 }, { wch: 14 }
   ];
 
   XLSX.utils.book_append_sheet(wb, ws, "DiemDanh");
