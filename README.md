@@ -164,7 +164,15 @@ function logToSheet(name, employeeId, lat, lng, dist, allowed, time) {
   }
 
   const status = allowed ? "✓ Có mặt" : "✗ Vắng mặt";
-  sheet.appendRow([
+  const row    = sheet.getLastRow() + 1;
+  const range  = sheet.getRange(row, 1, 1, 7);
+
+  // Ghi cột Thời gian & Mã NV dạng chữ để Google Sheet KHÔNG tự đổi sang kiểu ngày/số
+  // (nếu không, "05/11/2026" có thể bị hiểu thành 11/05 và danh sách hôm nay bị trống)
+  sheet.getRange(row, 1).setNumberFormat("@");
+  sheet.getRange(row, 3).setNumberFormat("@");
+
+  range.setValues([[
     Utilities.formatDate(time, "Asia/Ho_Chi_Minh", "dd/MM/yyyy HH:mm:ss"),
     name,
     employeeId,
@@ -172,11 +180,10 @@ function logToSheet(name, employeeId, lat, lng, dist, allowed, time) {
     parseFloat(lng).toFixed(6),
     Math.round(dist),
     status
-  ]);
+  ]]);
 
   if (!allowed) {
-    const lastRow = sheet.getLastRow();
-    sheet.getRange(lastRow, 1, 1, 7).setBackground("#fce8e6");
+    range.setBackground("#fce8e6");
   }
 }
 
@@ -227,6 +234,12 @@ https://script.google.com/macros/s/xxxxxxx/exec
 ```
 
 👉 Đây là API URL dùng để paste vào frontend.
+
+> ⚠️ **Mỗi lần sửa code Apps Script phải deploy lại bản mới**, nếu không Web App vẫn chạy code cũ:
+> **Deploy → Manage deployments → ✏️ Edit → Version: _New version_ → Deploy** (URL giữ nguyên).
+>
+> Kiểm tra nhanh: mở `https://script.google.com/macros/s/xxxx/exec?action=export` trên trình duyệt.
+> Nếu thấy `"rows": [...]` là đúng; nếu chỉ thấy `"status": "API đang hoạt động ✓"` là đang chạy bản cũ.
 
 ---
 
@@ -326,6 +339,15 @@ Sheet sẽ tự tạo header:
 - Kiểm tra Apps Script đã deploy Web App chưa
 - Kiểm tra quyền deploy phải là **Anyone**
 - Kiểm tra API URL đúng dạng `/exec`
+
+---
+
+## ⚠️ Nếu không thấy danh sách / bấm Sheet không xuất được
+- Mở `.../exec?action=export` trên trình duyệt để xem server trả về gì (xem mục Deploy ở trên)
+- Dữ liệu nằm ở **tab `DiemDanh`** (thanh tab dưới cùng của Google Sheet), không phải `Sheet1`
+- Apps Script phải được tạo từ chính file Sheet đó (**Extensions → Apps Script**)
+- Dòng đầu tiên của tab `DiemDanh` phải đúng tiêu đề: `Thời gian | Họ tên | Mã NV | Latitude | Longitude | Khoảng cách (m) | Trạng thái`
+- Danh sách trên trang chỉ hiện lượt điểm danh **hôm nay**; muốn xem tất cả thì bấm **Sheet** để tải Excel
 
 ---
 

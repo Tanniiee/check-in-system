@@ -266,13 +266,14 @@
   .empty-history { text-align: center; color: var(--muted); font-size: 13px; padding: 20px; }
 
   .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(calc(100% + 40px));
     background: #1b5e20; color: #fff;
     padding: 12px 20px; border-radius: 10px;
     font-size: 13px; font-weight: 600;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
-    z-index: 999; white-space: nowrap;
+    z-index: 999; width: max-content; max-width: calc(100vw - 32px);
+    text-align: center; line-height: 1.45;
   }
 
   .toast.show { transform: translateX(-50%) translateY(0); }
@@ -708,6 +709,38 @@ function showResult(data) {
 }
 
 // ============================================================
+// HELPERS — ngày dd/MM/yyyy (có số 0 đứng trước) & thông báo lỗi API
+// ============================================================
+const pad2 = n => String(n).padStart(2, '0');
+
+function todayVN() {
+  const d = new Date();
+  return `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+// Chuẩn hoá mọi dạng ngày ("5/11/2026", "05/11/2026 08:00:00", ISO...) về "05/11/2026"
+function normDate(value) {
+  const str = String(value || '');
+  const m = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) return `${pad2(m[1])}/${pad2(m[2])}/${m[3]}`;
+  const d = new Date(str);
+  if (!isNaN(d)) return `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()}`;
+  return '';
+}
+
+// Giải thích vì sao server không trả về danh sách
+function explainBadResponse(data) {
+  if (data && data.success && !Array.isArray(data.rows) && data.status) {
+    return 'Apps Script đang chạy bản cũ (chưa có chức năng xuất). Vào Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy.';
+  }
+  if (data && data.message) return data.message;
+  return 'Không đọc được dữ liệu từ Sheet.';
+}
+
+const NETWORK_ERROR_MSG =
+  'Không kết nối được Apps Script. Kiểm tra URL kết thúc bằng /exec và Web App đã để "Who has access: Anyone".';
+
+// ============================================================
 // LOAD HISTORY FROM GOOGLE SHEET
 // ============================================================
 async function loadHistoryFromServer() {
@@ -722,11 +755,11 @@ async function loadHistoryFromServer() {
     const data = await res.json();
 
     if (!data.success || !Array.isArray(data.rows)) {
-      list.innerHTML = `<div class="empty-history">⚠️ Không đọc được dữ liệu từ Sheet</div>`;
+      list.innerHTML = `<div class="empty-history">⚠️ ${explainBadResponse(data)}</div>`;
       return;
     }
 
-    const today = new Date().toLocaleDateString('vi-VN');
+    const today = todayVN();
 
     const rows = data.rows.map(r => ({
       time:   r['Thời gian'] || '',
@@ -736,10 +769,12 @@ async function loadHistoryFromServer() {
       status: r['Trạng thái'] || ''
     }));
 
-    const todayRows = rows.filter(r => String(r.time).includes(today));
+    const todayRows = rows.filter(r => normDate(r.time) === today);
 
     if (!todayRows.length) {
-      list.innerHTML = `<div class="empty-history">Chưa có lượt điểm danh nào hôm nay</div>`;
+      list.innerHTML = `<div class="empty-history">Chưa có lượt điểm danh nào hôm nay (${today})` +
+        (rows.length ? ` · Sheet có ${rows.length} lượt các ngày trước — bấm <b>Sheet</b> để xuất tất cả` : '') +
+        `</div>`;
       return;
     }
 
@@ -758,7 +793,7 @@ async function loadHistoryFromServer() {
     }).join('');
 
   } catch (err) {
-    list.innerHTML = `<div class="empty-history">❌ Lỗi tải dữ liệu từ server</div>`;
+    list.innerHTML = `<div class="empty-history">❌ ${NETWORK_ERROR_MSG}</div>`;
   }
 }
 
@@ -778,7 +813,7 @@ async function exportFromServer() {
     const data = await res.json();
 
     if (!data.success || !Array.isArray(data.rows)) {
-      showToast('⚠️ Không có dữ liệu hoặc lỗi server!', true);
+      showToast('⚠️ ' + explainBadResponse(data), true);
       return;
     }
 
@@ -797,7 +832,7 @@ async function exportFromServer() {
     buildAndDownloadExcel(serverRows);
 
   } catch (err) {
-    showToast('❌ Không kết nối được server. Kiểm tra API URL.', true);
+    showToast('❌ ' + NETWORK_ERROR_MSG, true);
   } finally {
     btn.disabled = false;
     btn.innerHTML = `
@@ -852,7 +887,7 @@ function showToast(msg, isError = false) {
   t.textContent = msg;
   t.className   = 'toast' + (isError ? ' error-toast' : '');
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+  setTimeout(() => t.classList.remove('show'), msg.length > 60 ? 7000 : 3500);
 }
 
 function shake(el) {
